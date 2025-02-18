@@ -66,7 +66,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-#    "cars.pipelines.CarsPipeline": 300,
+   # "cars.pipelines.CarsPipeline": 300,
     "cars.pipelines.PostgresqlPipeline": 300,
 }
 
@@ -95,4 +95,3 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
-DOWNLOAD_DELAY = 2 
