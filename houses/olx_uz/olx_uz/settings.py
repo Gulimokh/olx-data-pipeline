@@ -64,7 +64,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "olx_uz.pipelines.ApartmentPipeline": 300,
+    "olx_uz.pipelines.HousesPipeline": 300,
     "olx_uz.pipelines.PostgresqlPipeline": 400,
 }
 
