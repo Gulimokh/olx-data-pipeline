@@ -11,7 +11,7 @@ numpy==1.25.2
 openpyxl==3.1.5  # Optional for Excel export
 
 # Data Analysis
-ydata-profiling==4.6.4  # Check latest version
+ydata-profiling==4.6.4
 seaborn==0.12.2
 matplotlib==3.6.3
 plotly==5.24.1
