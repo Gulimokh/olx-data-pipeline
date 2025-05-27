@@ -1,4 +1,4 @@
-# Scrapy settings for olx_uz project
+# Scrapy settings for houses project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,13 +7,13 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "olx_uz"
+BOT_NAME = "houses"
 
-SPIDER_MODULES = ["olx_uz.spiders"]
-NEWSPIDER_MODULE = "olx_uz.spiders"
+SPIDER_MODULES = ["houses.spiders"]
+NEWSPIDER_MODULE = "houses.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "olx_uz (+http://www.yourdomain.com)"
+#USER_AGENT = "houses (+http://www.yourdomain.com)"
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
@@ -46,13 +46,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "olx_uz.middlewares.OlxUzSpiderMiddleware": 543,
+#    "houses.middlewares.OlxUzSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "olx_uz.middlewares.OlxUzDownloaderMiddleware": 543,
+#    "houses.middlewares.OlxUzDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -64,8 +64,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "olx_uz.pipelines.HousesPipeline": 300,
-    "olx_uz.pipelines.PostgresqlPipeline": 400,
+    "houses.pipelines.HousesPipeline": 300,
+    "houses.pipelines.PostgresqlPipeline": 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -9,12 +9,94 @@ class CommercialPremisesOlxSpider(scrapy.Spider):
     name = "commercial_premises_olx"
     allowed_domains = ["www.olx.uz"]
     start_urls = [
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=18',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=16&search%5Border%5D=created_at%3Adesc',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Border%5D=filter_float_price:asc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=18&search%5Border%5D=filter_float_price%3Aasc',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=19&search%5Border%5D=filter_float_price%3Adesc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price:desc',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Border%5D=relevance:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&page=19&search%5Border%5D=relevance%3Adesc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=business&search%5Border%5D=relevance:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=private&search%5Border%5D=relevance:desc',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&page=20&search%5Border%5D=created_at%3Adesc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=business&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=private&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price:asc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=business&search%5Border%5D=filter_float_price:asc',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Border%5D=filter_float_price:asc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=business&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UYE&search%5Border%5D=relevance:desc',
+
+
+
+
+
+
+
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_premise_type%5D%5B1%5D=2&search%5Bfilter_enum_premise_type%5D%5B2%5D=3&search%5Bfilter_enum_premise_type%5D%5B3%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=yes',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=5&search%5Bfilter_enum_premise_type%5D%5B1%5D=7&search%5Bfilter_enum_premise_type%5D%5B2%5D=6&search%5Bfilter_enum_premise_type%5D%5B3%5D=8&search%5Bfilter_enum_premise_type%5D%5B4%5D=9&search%5Bfilter_enum_premise_type%5D%5B5%5D=10&search%5Bfilter_enum_comission%5D%5B0%5D=yes',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_enum_premise_type%5D%5B1%5D=11&search%5Bfilter_enum_comission%5D%5B0%5D=yes',
+
+
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=60',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=70&search%5Bfilter_float_total_area:to%5D=90',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=100&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=15&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=2&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=70',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=2&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=80&search%5Bfilter_float_total_area:to%5D=100',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=2&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=125&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=2&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=19&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=2&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=2&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=3&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=90',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=3&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=100&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=3&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=24&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=3&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=3&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=70',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=80&search%5Bfilter_float_total_area:to%5D=100',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=125&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+
+
+
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=14&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=4&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=5&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=5&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=5&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=25&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=5&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=6&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=6&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=6&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=23&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=6&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=7&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=8&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=8&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=8&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=9&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=9&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=9&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=10&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=11&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=11&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=11&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=175',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:to%5D=90',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_float_total_area:from%5D=100&search%5Bfilter_float_total_area:to%5D=150',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&page=16&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_comission%5D%5B0%5D=no&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_float_total_area%3Afrom%5D=175&search%5Bprivate_business%5D=business',
+
 
     ]
     custom_settings = {
@@ -24,7 +106,9 @@ class CommercialPremisesOlxSpider(scrapy.Spider):
         "ROBOTSTXT_OBEY": True,
         "RETRY_TIMES": 2,
         "FEEDS": {
-            "commercial_premises_olx.json": {"format": "json", "overwrite": True}
+            "/Users/gulimoh/collateral-assessment/commercial_premises/commercial_premises/data/commercial_premises_olx.json": {
+                "format": "json",
+                "overwrite": True}
         }
     }
 

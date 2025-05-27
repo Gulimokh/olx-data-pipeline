@@ -12,8 +12,8 @@ class PostgresqlPipeline:
         self.conn = psycopg2.connect(
             host='127.0.0.1',
             database='postgres',
-            user='gulimoh',
-            password='postgres',
+            user='postgres',
+            password='5837',
             port='5432'
         )
         self.cur = self.conn.cursor()

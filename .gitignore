@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# MacOS
+.DS_Store
+
+# Virtual env
+venv/
+
+# PyCharm
+.idea/
+
+# Scrapy data dirs
+apartments/data/
+commercial_premises/commercial_premises/data/
+houses/houses/data/
+
+# YData reports
+ydata_profiling/apartments_report/data/
+ydata_profiling/houses_reports/data/

@@ -12,8 +12,8 @@ class PostgresqlPipeline:
         self.conn = psycopg2.connect(
             host='127.0.0.1',
             database='postgres',
-            user='gulimoh',
-            password='postgres',
+            user='postgres',
+            password='5837',
             port='5432'
         )
         self.cur = self.conn.cursor()
@@ -55,6 +55,24 @@ class PostgresqlPipeline:
         """Конвертирует словарь в JSON-строку"""
         return json.dumps(value) if isinstance(value, dict) else value
 
+
+
+    def clean_json_field(self, value):
+        """Конвертирует строку в JSON, если возможно, иначе хранит в виде JSON-строки"""
+        try:
+            if isinstance(value, str):
+                # Разбиваем строки с запятыми в массив
+                return json.dumps(value.split(", "))
+            elif isinstance(value, list):
+                return json.dumps(value)
+            elif isinstance(value, dict):
+                return json.dumps(value)
+            return json.dumps([])
+        except Exception as e:
+            self.logger.error(f"Ошибка обработки JSON: {value}, {e}")
+            return json.dumps([])
+
+
     def clean_year(self, value):
         """Выбирает первый год из диапазона"""
         try:
@@ -68,7 +86,7 @@ class PostgresqlPipeline:
         try:
             values = (
                 item.get('title'),
-                self.clean_int(item.get('price')),
+                self.clean_float(item.get('price')),
                 item.get('currency'),
                 item.get('description'),
                 self.clean_int(item.get('content_id')),
@@ -105,6 +123,14 @@ class PostgresqlPipeline:
                 self.clean_bool(item.get('comission')),
                 self.clean_float(item.get('total_area')),
                 self.clean_float(item.get('total_living_area')),
+                self.clean_json_field(item.get('water')),  # 🟢
+                self.clean_json_field(item.get('heating')),  # 🟢
+                self.clean_json_field(item.get('gas')),  # 🟢
+                self.clean_json_field(item.get('electricity')),  # 🟢
+                self.clean_json_field(item.get('plot')),  # 🟢
+                self.clean_json_field(item.get('location')),  # 🟢
+                self.clean_json_field(item.get('more_house')),  # 🟢
+                self.clean_json_field(item.get('near_is'))  # 🟢
             )
 
             query = """
@@ -113,10 +139,13 @@ class PostgresqlPipeline:
                 isbusiness, ishighlighted, ispromoted, promotion, delivery, createdtime, lastrefreshtime,
                 pushuptime, validtotime, isactive, status, itemcondition, negotiable, cityname, regionname,
                 districtname, olx_user, number_of_rooms, floor, total_floors, house_type, layout,
-                year_of_construction_sale, wc, furnished, ceiling_height, repairs, comission, total_area, total_living_area
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-             ON CONFLICT (content_id) DO NOTHING;
+                year_of_construction_sale, wc, furnished, ceiling_height, repairs, comission, total_area, total_living_area,
+                water, heating, gas, electricity, plot, location, more_house, near_is
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (content_id) DO NOTHING;
             """
+
 
             self.logger.info(f"Executing SQL with values: {values}")
             self.logger.info(f"VALUES COUNT: {len(values)}")

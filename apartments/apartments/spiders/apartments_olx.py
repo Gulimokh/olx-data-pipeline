@@ -6,10 +6,35 @@ class ApartmentsOlxSpider(scrapy.Spider):
     name = "apartments_olx"
     allowed_domains = ["www.olx.uz"]
     start_urls = [
-        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bfilter_enum_comission%5D%5B0%5D=no',
-        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Border%5D=created_at:desc&search%5Bfilter_enum_comission%5D%5B0%5D=no',
-        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Border%5D=filter_float_price:asc&search%5Bfilter_enum_comission%5D%5B0%5D=no',
-        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Border%5D=filter_float_price:desc&search%5Bfilter_enum_comission%5D%5B0%5D=no',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=17&search%5Border%5D=created_at%3Adesc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Border%5D=filter_float_price:asc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=17&search%5Border%5D=filter_float_price%3Aasc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=17&search%5Border%5D=filter_float_price%3Adesc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Border%5D=relevance:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=relevance%3Adesc&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Border%5D=relevance:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=relevance%3Adesc&search%5Bprivate_business%5D=private',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=created_at%3Adesc&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=created_at%3Adesc&search%5Bprivate_business%5D=private',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price:asc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=filter_float_price%3Aasc&search%5Bprivate_business%5D=private',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Border%5D=filter_float_price:asc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=filter_float_price%3Aasc&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=18&search%5Border%5D=filter_float_price%3Adesc&search%5Bprivate_business%5D=business',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&search%5Bprivate_business%5D=private&search%5Border%5D=filter_float_price:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UZS&page=17&search%5Border%5D=filter_float_price%3Adesc&search%5Bprivate_business%5D=private',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UYE&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UYE&page=18&search%5Border%5D=created_at%3Adesc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UYE&search%5Bprivate_business%5D=business&search%5Border%5D=created_at:desc',
+        'https://www.olx.uz/nedvizhimost/kvartiry/prodazha/?currency=UYE&search%5Bprivate_business%5D=private&search%5Border%5D=created_at:desc',
+        '',
     ]
 
     custom_settings = {
@@ -19,7 +44,10 @@ class ApartmentsOlxSpider(scrapy.Spider):
         "ROBOTSTXT_OBEY": True,
         "RETRY_TIMES": 2,
         "FEEDS": {
-            "olx_uz.json": {"format": "json", "overwrite": True}
+            "/Users/gulimoh/collateral-assessment/apartments/data/olx_ux.json": {
+                "format": "json",
+                "overwrite": True
+            }
         }
     }
 
