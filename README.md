@@ -82,7 +82,19 @@ POSTGRES_PASSWORD=your_password
 
 ### 3. Create PostgreSQL tables
 
-Each spider expects its table to exist. Schema examples are provided as comments at the bottom of each `pipelines.py` file.
+SQL schemas for all 10 tables are in the `schema/` directory:
+
+```bash
+psql -U postgres -d postgres -f schema/apartments.sql
+psql -U postgres -d postgres -f schema/houses.sql
+psql -U postgres -d postgres -f schema/commercial_premises.sql
+psql -U postgres -d postgres -f schema/land.sql
+psql -U postgres -d postgres -f schema/cars.sql
+psql -U postgres -d postgres -f schema/trucks.sql
+psql -U postgres -d postgres -f schema/trailer.sql
+psql -U postgres -d postgres -f schema/specialvehicles.sql
+psql -U postgres -d postgres -f schema/agromachine.sql
+```
 
 ---
 
