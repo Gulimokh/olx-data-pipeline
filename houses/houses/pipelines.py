@@ -1,67 +1,72 @@
+import os
 import psycopg2
 import psycopg2.extras
 import logging
 import json
+from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
+
+load_dotenv()  # loads .env from project root
+
 
 class HousesPipeline:
-    def process_item(self, item, spider):
+    def process_item(self, item: dict, spider) -> dict:
         return item
 
 class PostgresqlPipeline:
     def __init__(self):
         self.conn = psycopg2.connect(
-            host='127.0.0.1',
-            database='postgres',
-            user='postgres',
-            password='5837',
-            port='5432'
+            host=os.getenv('POSTGRES_HOST', '127.0.0.1'),
+            database=os.getenv('POSTGRES_DB', 'postgres'),
+            user=os.getenv('POSTGRES_USER', 'postgres'),
+            password=os.getenv('POSTGRES_PASSWORD', 'your_password'),
+            port=os.getenv('POSTGRES_PORT', '5432')
         )
         self.cur = self.conn.cursor()
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
 
-    def close_spider(self, spider):
+    def close_spider(self, spider) -> None:
         if self.cur:
             self.cur.close()
         if self.conn:
             self.conn.close()
 
-    # === ФУНКЦИИ ОЧИСТКИ ДАННЫХ ===
-    def clean_int(self, value):
-        """Очищает и конвертирует значение в int"""
+    # === DATA CLEANING HELPERS ===
+    def clean_int(self, value: any) -> int | None:
+        """Cleans and converts value to int"""
         try:
             return int(value.strip()) if isinstance(value, str) and value.strip().isdigit() else int(value)
-        except:
+        except (ValueError, TypeError):
             return None
 
-    def clean_float(self, value):
-        """Очищает и конвертирует строки в float (убирает 'м²')"""
+    def clean_float(self, value: any) -> float | None:
+        """Cleans and converts string to float (strips 'm²')"""
         try:
             if isinstance(value, str):
-                return float(value.replace(" м²", "").replace(",", ".").strip())
+                return float(value.replace(" м²", "").replace(",", ".").strip())  # OLX area unit: "м²" = m²
             return float(value) if value else None
-        except:
+        except (ValueError, TypeError):
             return None
 
-    def clean_bool(self, value):
-        """Конвертирует 'Да'/'Нет' и JSON-значения True/False в Boolean"""
-        if value in ["Да", "да", "Yes", "yes", True]:
+    def clean_bool(self, value: any) -> bool:
+        """Converts 'Yes'/'No' and JSON True/False values to bool"""
+        if value in ["Да", "да", "Yes", "yes", True]:  # OLX yes/no field values (Russian: "Да"=Yes, "Нет"=No)
             return True
-        elif value in ["Нет", "нет", "No", "no", False]:
+        elif value in ["Нет", "нет", "No", "no", False]:  # OLX no field values
             return False
-        return False  # Если None, ставим False
+        return False  # default to False for None
 
-    def clean_json(self, value):
-        """Конвертирует словарь в JSON-строку"""
+    def clean_json(self, value: any) -> str:
+        """Converts dict to JSON string"""
         return json.dumps(value) if isinstance(value, dict) else value
 
 
 
-    def clean_json_field(self, value):
-        """Конвертирует строку в JSON, если возможно, иначе хранит в виде JSON-строки"""
+    def clean_json_field(self, value: any) -> str:
+        """Converts value to JSON string; splits comma-separated strings into arrays"""
         try:
             if isinstance(value, str):
-                # Разбиваем строки с запятыми в массив
+                # split comma-separated strings into array
                 return json.dumps(value.split(", "))
             elif isinstance(value, list):
                 return json.dumps(value)
@@ -69,20 +74,34 @@ class PostgresqlPipeline:
                 return json.dumps(value)
             return json.dumps([])
         except Exception as e:
-            self.logger.error(f"Ошибка обработки JSON: {value}, {e}")
+            logger.error(f"Error processing JSON: {value}, {e}")
             return json.dumps([])
 
 
-    def clean_year(self, value):
-        """Выбирает первый год из диапазона"""
+    def clean_list_to_text(self, value: any) -> str | None:
+        """Converts list or string to plain text"""
+        try:
+            if isinstance(value, list):
+                return ", ".join([str(v).strip() for v in value if v])
+            elif isinstance(value, str):
+                return value.strip()
+            else:
+                return None
+        except Exception as e:
+            logger.error(f"Error processing text list: {value}, {e}")
+            return None
+
+
+    def clean_year(self, value: any) -> int | None:
+        """Extracts the first year from a year range string"""
         try:
             if isinstance(value, str) and "-" in value:
                 return int(value.split("-")[0].strip())
             return int(value) if value else None
-        except:
+        except (ValueError, TypeError):
             return None
 
-    def process_item(self, item, spider):
+    def process_item(self, item: dict, spider) -> dict:
         try:
             values = (
                 item.get('title'),
@@ -114,6 +133,7 @@ class PostgresqlPipeline:
                 self.clean_int(item.get('floor')),
                 self.clean_int(item.get('total_floors')),
                 item.get('house_type'),
+                item.get('house_subtype'),
                 item.get('layout'),
                 self.clean_year(item.get('year_of_construction_sale')),
                 item.get('wc'),
@@ -123,14 +143,16 @@ class PostgresqlPipeline:
                 self.clean_bool(item.get('comission')),
                 self.clean_float(item.get('total_area')),
                 self.clean_float(item.get('total_living_area')),
-                self.clean_json_field(item.get('water')),  # 🟢
-                self.clean_json_field(item.get('heating')),  # 🟢
-                self.clean_json_field(item.get('gas')),  # 🟢
-                self.clean_json_field(item.get('electricity')),  # 🟢
-                self.clean_json_field(item.get('plot')),  # 🟢
-                self.clean_json_field(item.get('location')),  # 🟢
-                self.clean_json_field(item.get('more_house')),  # 🟢
-                self.clean_json_field(item.get('near_is'))  # 🟢
+
+                self.clean_list_to_text(item.get('water')),  # 🟢
+                self.clean_list_to_text(item.get('heating')),
+                self.clean_list_to_text(item.get('gas')),
+                self.clean_list_to_text(item.get('electricity')),
+
+                self.clean_float(item.get('plot')),  # 🟢
+                self.clean_list_to_text(item.get('location')),
+                self.clean_list_to_text(item.get('more_house')),
+                self.clean_list_to_text(item.get('near_is'))
             )
 
             query = """
@@ -138,30 +160,25 @@ class PostgresqlPipeline:
                 title, price, currency, description, content_id, category, category_type, url,
                 isbusiness, ishighlighted, ispromoted, promotion, delivery, createdtime, lastrefreshtime,
                 pushuptime, validtotime, isactive, status, itemcondition, negotiable, cityname, regionname,
-                districtname, olx_user, number_of_rooms, floor, total_floors, house_type, layout,
+                districtname, olx_user, number_of_rooms, floor, total_floors, house_type, house_subtype, layout,
                 year_of_construction_sale, wc, furnished, ceiling_height, repairs, comission, total_area, total_living_area,
                 water, heating, gas, electricity, plot, location, more_house, near_is
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, %s, %s, %s)
+                %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (content_id) DO NOTHING;
             """
 
 
-            self.logger.info(f"Executing SQL with values: {values}")
-            self.logger.info(f"VALUES COUNT: {len(values)}")
-            self.logger.info(f"PLACEHOLDERS COUNT: {query.count('%s')}")
-            self.logger.info(f"Executing SQL with values: {values}")
 
-            self.logger.info(f"Executing SQL with values: {values}")
 
             self.cur.execute(query, values)
             self.conn.commit()
 
         except psycopg2.Error as e:
             self.conn.rollback()
-            self.logger.error(f"❌ Ошибка базы данных: {e.pgcode} - {e.pgerror}, Item: {item}")
+            logger.error(f"❌ Database error: {e.pgcode} - {e.pgerror}, Item: {item}")
         except Exception as e:
             self.conn.rollback()
-            self.logger.error(f"❌ Неожиданная ошибка: {e}, Item: {item}")
+            logger.error(f"❌ Unexpected error: {e}, Item: {item}")
 
         return item

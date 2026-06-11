@@ -41,6 +41,7 @@ class CommercialPremisesOlxSpider(scrapy.Spider):
 
 
 
+
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=1&search%5Bfilter_enum_premise_type%5D%5B1%5D=2&search%5Bfilter_enum_premise_type%5D%5B2%5D=3&search%5Bfilter_enum_premise_type%5D%5B3%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=yes',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=5&search%5Bfilter_enum_premise_type%5D%5B1%5D=7&search%5Bfilter_enum_premise_type%5D%5B2%5D=6&search%5Bfilter_enum_premise_type%5D%5B3%5D=8&search%5Bfilter_enum_premise_type%5D%5B4%5D=9&search%5Bfilter_enum_premise_type%5D%5B5%5D=10&search%5Bfilter_enum_comission%5D%5B0%5D=yes',
         'https://www.olx.uz/nedvizhimost/kommercheskie-pomeshcheniya/prodazha/?currency=UZS&search%5Bfilter_enum_premise_type%5D%5B0%5D=12&search%5Bfilter_enum_premise_type%5D%5B1%5D=11&search%5Bfilter_enum_comission%5D%5B0%5D=yes',
@@ -113,13 +114,13 @@ class CommercialPremisesOlxSpider(scrapy.Spider):
     }
 
     def parse(self, response):
-        # Извлекаем ссылки на детальные страницы
+        # Extract links to listing detail pages
         for apartment in response.css('div[data-cy="l-card"]'):
             detail_page = apartment.css('div[data-cy="ad-card-title"]>a::attr(href)').get()
             if detail_page:
                 yield response.follow(detail_page, self.parse_detail)
 
-        # Переход на следующую страницу, если есть
+        # Follow to next page if available
         next_page = response.css('a[data-cy="pagination-forward"]::attr(href)').get()
         if next_page is not None:
             yield response.follow(next_page, self.parse)
@@ -159,7 +160,7 @@ class CommercialPremisesOlxSpider(scrapy.Spider):
             'districtName': js_content['ad']['ad']['location']['districtName'],
             'user': json.dumps(js_content['ad']['ad']['user']), #json
 
-            # Параметры коммерческой недвижимости
+            # Commercial property parameters
             "premise_type": params.get("premise_type"),
             "total_area": params.get("total_area"),
             "effective_area": params.get("effective_area"),
@@ -177,7 +178,7 @@ class CommercialPremisesOlxSpider(scrapy.Spider):
             if key not in item_values:
                 item_values[key] = value
 
-        self.logger.info(f"✅ [SUCCESS] Спарсено объявление: {item_values['title']}")
+        self.logger.info(f"✅ [SUCCESS] Scraped listing: {item_values['title']}")
         yield item_values
 
     def extract_js_content(self, response):

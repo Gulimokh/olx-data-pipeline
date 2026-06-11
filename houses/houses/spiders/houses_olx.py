@@ -14,11 +14,14 @@ class OLXHousesSpider(scrapy.Spider):
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bprivate_business%5D=business&search%5Border%5D=relevance:desc',
 
 
-
-
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bfilter_enum_private_house_type%5D%5B0%5D=2&search%5Bfilter_enum_private_house_type%5D%5B1%5D=3&search%5Bfilter_enum_private_house_type%5D%5B2%5D=5&search%5Bfilter_enum_comission%5D%5B0%5D=yes&search%5Bfilter_enum_furnished_house%5D%5B0%5D=yes',
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bfilter_enum_private_house_type%5D%5B0%5D=6&search%5Bfilter_enum_private_house_type%5D%5B1%5D=4&search%5Bfilter_enum_comission%5D%5B0%5D=yes&search%5Bfilter_enum_furnished_house%5D%5B0%5D=yes',
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bfilter_float_number_of_rooms:to%5D=4&search%5Bfilter_enum_private_house_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=yes&search%5Bfilter_enum_furnished_house%5D%5B0%5D=yes',
+
+
+
+
+
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bfilter_float_number_of_rooms:from%5D=5&search%5Bfilter_float_total_area:to%5D=150&search%5Bfilter_enum_private_house_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=yes&search%5Bfilter_enum_furnished_house%5D%5B0%5D=yes',
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bfilter_float_number_of_rooms:from%5D=5&search%5Bfilter_float_total_area:from%5D=175&search%5Bfilter_float_total_floors:to%5D=1&search%5Bfilter_enum_private_house_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=yes&search%5Bfilter_enum_furnished_house%5D%5B0%5D=yes',
         'https://www.olx.uz/nedvizhimost/doma/prodazha/?currency=UZS&search%5Bfilter_float_number_of_rooms:from%5D=5&search%5Bfilter_float_total_area:from%5D=175&search%5Bfilter_float_total_floors:from%5D=2&search%5Bfilter_enum_private_house_type%5D%5B0%5D=1&search%5Bfilter_enum_comission%5D%5B0%5D=yes&search%5Bfilter_enum_furnished_house%5D%5B0%5D=yes',
@@ -99,13 +102,13 @@ class OLXHousesSpider(scrapy.Spider):
     }
 
     def parse(self, response):
-        # Извлекаем ссылки на детальные страницы объявлений
+        # Extract links to listing detail pages
         for house in response.css('div[data-cy="l-card"]'):
             detail_page = house.css('div[data-cy="ad-card-title"]>a::attr(href)').get()
             if detail_page:
                 yield response.follow(detail_page, self.parse_detail)
 
-        # Переход на следующую страницу
+        # Follow to next page
         next_page = response.css('a[data-cy="pagination-forward"]::attr(href)').get()
         if next_page:
             yield response.follow(next_page, self.parse)
@@ -118,7 +121,17 @@ class OLXHousesSpider(scrapy.Spider):
         category_id = js_content['ad']['ad']['category']['id']
         category = js_content['categories']['list'][str(category_id)]['name']
 
-        # Формирование извлекаемых данных
+
+        # Look for house_subtype
+        house_subtype = params.get("house_type") or params.get("private_house_type")
+
+        if not house_subtype:
+            # Fallback: extract from page text if not found in params
+            house_subtype_text = response.xpath('//p[contains(text(), "Тип дома")]/text()').get()  # OLX label: "Тип дома" = "House type"
+            if house_subtype_text:
+                house_subtype = house_subtype_text.replace("Тип дома:", "").strip()  # strip OLX label prefix
+
+        # Build extracted data dict
         house_data = {
             'title': js_content['ad']['ad']['title'],
             'price': js_content['ad']['ad']['price']['regularPrice']['value'],
@@ -145,8 +158,9 @@ class OLXHousesSpider(scrapy.Spider):
             'regionName': js_content['ad']['ad']['location']['regionName'],
             'districtName': js_content['ad']['ad']['location'].get('districtName', None),
             'user': json.dumps(js_content['ad']['ad']['user']),
+            'house_subtype': house_subtype,
 
-            # **Параметры дома из JSON**
+            # House parameters from JSON
             "number_of_rooms": params.get("number_of_rooms"),
             "total_area": params.get("total_area"),
             "total_living_area": params.get("total_living_area"),
@@ -170,14 +184,18 @@ class OLXHousesSpider(scrapy.Spider):
             "near_is": params.get("near_is"),
         }
 
-        self.logger.info(f"✅ [SUCCESS] Спарсено объявление: {house_data['title']}")
+        self.logger.info(f"✅ [SUCCESS] Scraped listing: {house_data['title']}")
+
+
         yield house_data
 
+
+
     def extract_js_content(self, response):
-        """Извлечение JavaScript-контента с OLX."""
+        """Extract JavaScript content from OLX page."""
         script_content = response.xpath('//script[@id="olx-init-config"]/text()').get()
         if not script_content:
-            self.logger.error("Ошибка: тег script с id 'olx-init-config' не найден")
+            self.logger.error("Error: script tag with id 'olx-init-config' not found")
             return None
 
         js = script_content + " window.__PRERENDERED_STATE__;"
@@ -186,7 +204,7 @@ class OLXHousesSpider(scrapy.Spider):
             js_context = js2py.eval_js(js)
         except js2py.base.PyJsException:
             js_context = ""
-            self.logger.error("Ошибка: Не удалось выполнить JavaScript")
+            self.logger.error("Error: failed to execute JavaScript")
 
         js_content = json.loads(js_context)
         return js_content

@@ -5,12 +5,14 @@ import logging
 import json
 from dotenv import load_dotenv
 
-logger = logging.getLogger(__name__)
-
 load_dotenv()  # loads .env from project root
 
+logger = logging.getLogger(__name__)
 
-class CommercialPremisesPipeline:
+
+
+
+class LandPipeline:
     def process_item(self, item: dict, spider) -> dict:
         return item
 
@@ -60,6 +62,38 @@ class PostgresqlPipeline:
         """Converts dict to JSON string"""
         return json.dumps(value) if isinstance(value, dict) else value
 
+
+
+    def clean_json_field(self, value: any) -> str:
+        """Converts value to JSON string; splits comma-separated strings into arrays"""
+        try:
+            if isinstance(value, str):
+                # split comma-separated strings into array
+                return json.dumps(value.split(", "))
+            elif isinstance(value, list):
+                return json.dumps(value)
+            elif isinstance(value, dict):
+                return json.dumps(value)
+            return json.dumps([])
+        except Exception as e:
+            logger.error(f"Error processing JSON: {value}, {e}")
+            return json.dumps([])
+
+
+    def clean_list_to_text(self, value: any) -> str | None:
+        """Converts list or string to plain text"""
+        try:
+            if isinstance(value, list):
+                return ", ".join([str(v).strip() for v in value if v])
+            elif isinstance(value, str):
+                return value.strip()
+            else:
+                return None
+        except Exception as e:
+            logger.error(f"Error processing text list: {value}, {e}")
+            return None
+
+
     def clean_year(self, value: any) -> int | None:
         """Extracts the first year from a year range string"""
         try:
@@ -73,9 +107,12 @@ class PostgresqlPipeline:
         try:
             values = (
                 item.get('title'),
-                self.clean_int(item.get('content_id')),
+                self.clean_float(item.get('price')),
+                item.get('currency'),
                 item.get('description'),
+                self.clean_int(item.get('content_id')),
                 item.get('category'),
+                item.get('category_type'),
                 item.get('url'),
                 self.clean_bool(item.get('isBusiness')),
                 self.clean_bool(item.get('isHighlighted')),
@@ -88,38 +125,48 @@ class PostgresqlPipeline:
                 item.get('validToTime'),
                 self.clean_bool(item.get('isActive')),
                 item.get('status'),
-                self.clean_int(item.get('price')),
-                item.get('currency'),
+                item.get('itemCondition'),
                 self.clean_bool(item.get('negotiable')),
                 item.get('cityName'),
                 item.get('regionName'),
                 item.get('districtName') or None,
                 self.clean_json(item.get('user')),
 
-                item.get('premise_type'),
-                self.clean_float(item.get('total_area')),
-                self.clean_float(item.get('effective_area')),
-                self.clean_float(item.get('land')),
-                self.clean_int(item.get('floor')),
-                self.clean_int(item.get('total_floors')),
-                self.clean_float(item.get('ceiling_height')),
-                item.get('repairs'),
-                item.get('more_premises'),
-                self.clean_bool(item.get('parking_lot')),
+                item.get('land_type'),
+                item.get('purpose'),
+
+                item.get('in_city'),
+
                 self.clean_bool(item.get('comission')),
+                self.clean_float(item.get('total_area')),
+                self.clean_float(item.get('phone')),
+
+                self.clean_list_to_text(item.get('water')),  # 🟢
+                self.clean_list_to_text(item.get('internet')),
+
+                self.clean_list_to_text(item.get('heating')),
+                self.clean_list_to_text(item.get('gas')),
+                self.clean_list_to_text(item.get('electricity')),
+
+                self.clean_float(item.get('plot')),  # 🟢
+                self.clean_list_to_text(item.get('location')),
+                self.clean_list_to_text(item.get('canalization')),
+                self.clean_list_to_text(item.get('communications')),
+                self.clean_list_to_text(item.get('near_is'))
             )
 
             query = """
-        INSERT INTO public.commercial_premises (
-            title, content_id, description, category, url, isbusiness, ishighlighted, ispromoted,
-            promotion, delivery, createdtime, lastrefreshtime, pushuptime, validtotime, isactive, status,
-            price, currency, negotiable, cityname, regionname, districtname, olx_user,
-            premise_type, total_area, effective_area, land, floor, total_floors, ceiling_height, repairs,
-             more_premises, parking_lot, comission
-             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO public.land (
+                title, price, currency, description, content_id, category, category_type, url,
+                isbusiness, ishighlighted, ispromoted, promotion, delivery, createdtime, lastrefreshtime,
+                pushuptime, validtotime, isactive, status, itemcondition, negotiable, cityname, regionname,
+                districtname, olx_user, land_type, purpose, in_city, comission, total_area, phone,
+                water, internet,  heating, gas, electricity, plot, location, canalization, communications, near_is
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) --41
             ON CONFLICT (content_id) DO NOTHING;
-"""
+            """
+
 
 
 
@@ -134,5 +181,3 @@ class PostgresqlPipeline:
             logger.error(f"❌ Unexpected error: {e}, Item: {item}")
 
         return item
-
-

@@ -8,15 +8,48 @@ __pycache__/
 
 # Virtual env
 venv/
+ydata_profiling/ydata-profiling_cars/data-profiling/
 
-# PyCharm
+# PyCharm / JetBrains
 .idea/
 
-# Scrapy data dirs
+# Claude Code
+.claude/
+
+# Screenshots folder
+claudefoto/
+
+# Telegram session files (credentials — never commit)
+*.session
+
+# Scrapy output data (OLX)
 apartments/data/
+apartments/urls.py
 commercial_premises/commercial_premises/data/
 houses/houses/data/
+land/land/data/
+agromachine/agromachine_olx.json
+specialvehicles/olx_uz.json
+trucks/trucks_olx.json
+trailer/trailer_olx.json
 
-# YData reports
+# Telegram data files (raw messages — may contain personal info)
+telegram_data_*.json
+ydata_profiling/houses_reports/tg/
+
+# YData profiling reports and data
 ydata_profiling/apartments_report/data/
 ydata_profiling/houses_reports/data/
+ydata_profiling/ydata-profiling_cars/
+
+# Generated HTML reports and data exports (contain embedded data)
+*.html
+*.csv
+*.ods
+
+# IDE artifacts
+*.pyc
+__pycache__/
+
+# Environment variables
+.env

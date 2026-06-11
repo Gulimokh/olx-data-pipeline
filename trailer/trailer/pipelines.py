@@ -1,16 +1,23 @@
 import os
+
+logger = logging.getLogger(__name__)
+
+# Define your item pipelines here
+#
+# Don't forget to add your pipeline to the ITEM_PIPELINES setting
+# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
+
+# useful for handling different item types with a single interface
 import psycopg2
 import psycopg2.extras
 import logging
 import json
 from dotenv import load_dotenv
-
-logger = logging.getLogger(__name__)
-
 load_dotenv()  # loads .env from project root
 
 
-class CommercialPremisesPipeline:
+class TrailerPipeline:
     def process_item(self, item: dict, spider) -> dict:
         return item
 
@@ -31,7 +38,6 @@ class PostgresqlPipeline:
         if self.conn:
             self.conn.close()
 
-    # === DATA CLEANING HELPERS ===
     def clean_int(self, value: any) -> int | None:
         """Cleans and converts value to int"""
         try:
@@ -39,14 +45,9 @@ class PostgresqlPipeline:
         except (ValueError, TypeError):
             return None
 
-    def clean_float(self, value: any) -> float | None:
-        """Cleans and converts string to float (strips 'm²')"""
-        try:
-            if isinstance(value, str):
-                return float(value.replace(" м²", "").replace(",", ".").strip())  # OLX area unit: "м²" = m²
-            return float(value) if value else None
-        except (ValueError, TypeError):
-            return None
+    def clean_json(self, value: any) -> str:
+        """Converts dict to JSON string"""
+        return json.dumps(value) if isinstance(value, dict) else value
 
     def clean_bool(self, value: any) -> bool:
         """Converts 'Yes'/'No' and JSON True/False values to bool"""
@@ -56,26 +57,30 @@ class PostgresqlPipeline:
             return False
         return False  # default to False for None
 
-    def clean_json(self, value: any) -> str:
-        """Converts dict to JSON string"""
-        return json.dumps(value) if isinstance(value, dict) else value
-
-    def clean_year(self, value: any) -> int | None:
-        """Extracts the first year from a year range string"""
-        try:
-            if isinstance(value, str) and "-" in value:
-                return int(value.split("-")[0].strip())
-            return int(value) if value else None
-        except (ValueError, TypeError):
-            return None
-
     def process_item(self, item: dict, spider) -> dict:
         try:
+            # Check if content_id already exists in the database
+            check_query = "SELECT EXISTS (SELECT 1 FROM trailer_olx WHERE content_id = %s)"
+            self.cur.execute(check_query, (item.get('content_id'),))
+            result = self.cur.fetchone()
+
+            if result[0]:
+                logger.info(f"Item with content_id {item.get('content_id')} already exists. Skipping insertion.")
+                return None  # Skip inserting the item
+            # Prepare the query and values
+            query = """
+               insert into trailer_olx(title, description, content_id, price, currency, category, category_type, url, isBusiness, isHighlighted, isPromoted, promotion, delivery, createdTime, lastRefreshTime, pushupTime, validToTime, isActive, status, isJob, itemCondition, negotiable, cityName, regionName, districtName, olx_user)
+               values( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+               
+            """
             values = (
                 item.get('title'),
-                self.clean_int(item.get('content_id')),
                 item.get('description'),
+                self.clean_int(item.get('content_id')),
+                self.clean_int(item.get('price')),
+                item.get('currency'),
                 item.get('category'),
+                item.get('category_type'),
                 item.get('url'),
                 self.clean_bool(item.get('isBusiness')),
                 self.clean_bool(item.get('isHighlighted')),
@@ -88,39 +93,15 @@ class PostgresqlPipeline:
                 item.get('validToTime'),
                 self.clean_bool(item.get('isActive')),
                 item.get('status'),
-                self.clean_int(item.get('price')),
-                item.get('currency'),
+                item.get('isJob'),
+                item.get('itemCondition'),
                 self.clean_bool(item.get('negotiable')),
                 item.get('cityName'),
                 item.get('regionName'),
-                item.get('districtName') or None,
-                self.clean_json(item.get('user')),
-
-                item.get('premise_type'),
-                self.clean_float(item.get('total_area')),
-                self.clean_float(item.get('effective_area')),
-                self.clean_float(item.get('land')),
-                self.clean_int(item.get('floor')),
-                self.clean_int(item.get('total_floors')),
-                self.clean_float(item.get('ceiling_height')),
-                item.get('repairs'),
-                item.get('more_premises'),
-                self.clean_bool(item.get('parking_lot')),
-                self.clean_bool(item.get('comission')),
+                item.get('districtName'),
+                self.clean_json(item.get('olx_user')),
+                
             )
-
-            query = """
-        INSERT INTO public.commercial_premises (
-            title, content_id, description, category, url, isbusiness, ishighlighted, ispromoted,
-            promotion, delivery, createdtime, lastrefreshtime, pushuptime, validtotime, isactive, status,
-            price, currency, negotiable, cityname, regionname, districtname, olx_user,
-            premise_type, total_area, effective_area, land, floor, total_floors, ceiling_height, repairs,
-             more_premises, parking_lot, comission
-             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (content_id) DO NOTHING;
-"""
-
 
 
             self.cur.execute(query, values)
@@ -134,5 +115,3 @@ class PostgresqlPipeline:
             logger.error(f"❌ Unexpected error: {e}, Item: {item}")
 
         return item
-
-
