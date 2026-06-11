@@ -1,4 +1,4 @@
-# collateral-assessment
+# olx-data-pipeline
 
 A production-grade data collection pipeline for real estate and vehicle market analysis in Uzbekistan. Scrapes structured listing data from [OLX.uz](https://www.olx.uz/) and [kupi-dom.uz](https://kupi-dom.uz/) across 10 asset categories, storing normalized records in PostgreSQL for downstream pricing and collateral valuation models.
 
@@ -59,8 +59,8 @@ OLX.uz / kupi-dom.uz
 ### 1. Clone and install dependencies
 
 ```bash
-git clone https://github.com/Gulimokh/collateral-assessment.git
-cd collateral-assessment
+git clone https://github.com/Gulimokh/olx-data-pipeline.git
+cd olx-data-pipeline
 pip install -r requirements.txt
 ```
 
@@ -169,7 +169,7 @@ Reports include: distributions, missing values, outlier detection, correlations,
 ## Project Structure
 
 ```
-collateral-assessment/
+olx-data-pipeline/
 ├── apartments/                  # Apartment spider (OLX.uz)
 ├── houses/                      # House spider (OLX.uz)
 ├── commercial_premises/         # Commercial property spider (OLX.uz)
