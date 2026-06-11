@@ -215,3 +215,13 @@ Each spider subdirectory follows the standard Scrapy layout:
 ## Tech Stack
 
 `Python 3.10` · `Scrapy` · `js2py` · `psycopg2` · `PostgreSQL` · `ydata-profiling` · `pandas` · `python-dotenv`
+
+---
+
+## Data & Privacy
+
+All data collected by this pipeline is sourced from **publicly accessible listings** on OLX.uz and kupi-dom.uz. The `olx_user` field stores seller metadata (display name, profile ID) as returned by the OLX public API — the same information visible to any visitor of the listing page.
+
+- No authentication or private API access is used
+- Collected data should not be republished or used to contact sellers at scale
+- Personal data (phone numbers, exact addresses) must not be shared or published
